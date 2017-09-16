@@ -18,7 +18,6 @@ class transactionViewController: UIViewController {
     var currentRound = ""
     var currentDate = ""
     
-    
     @IBOutlet weak var costTextField: UITextField!
     
     @IBOutlet weak var typeOfTransaction: UISegmentedControl!
@@ -50,6 +49,7 @@ class transactionViewController: UIViewController {
         let userRef = databaseRef.child("users").child(uid!).child("stats").child(currentRound).child(currentDate)
         let comment = commentsTextField.text
         if let temp = Double(cost!) {
+        if let temp = Double(costTextField.text!) {
             if comment != "" && type != "" {
                 let values : [String : Double] = [comment! : temp]
                 userRef.child(type).updateChildValues(values, withCompletionBlock: { (error, ref) in
@@ -87,6 +87,8 @@ class transactionViewController: UIViewController {
             completion(value)
         })
     }
+    
+    
     
     
     

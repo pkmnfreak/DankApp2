@@ -76,7 +76,7 @@ class signUpViewController: UIViewController, UIImagePickerControllerDelegate, U
                     return
                 }
                 let userReference = self.databaseRef.child("users").child(uid)
-                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[String](), "competitionInterval":0]
+                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[String](), "competitionInterval":0, "inComp" : false, "startDate": 0, "endDate": 0]
                 userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
                     if error != nil {
                         print(error!)
