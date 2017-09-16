@@ -48,21 +48,39 @@ class signUpViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func signUpButtonPressed(_ sender: Any) {
         
         guard let usernameTextField = usernameTextField.text else {
-            print("Invalid username!")
+            let alert = UIAlertController(title: "Invalid username", message: "Must enter a valid Email.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
             return
         }
         
         guard let passwordTextField = passwordTextField.text else {
-            print("Invalid password!")
+            let alert = UIAlertController(title: "Invalid password", message: "Your password must be at least 6 characters", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
             return
         }
         
         guard let confirmPasswordField = confirmPasswordViewController.text else {
-            print("Invalid confirmation!")
+            
+            let alert = UIAlertController(title: "Invalid confirmation!", message: "You have an invalid confirmation.", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
             return
         }
         if (confirmPasswordField != passwordTextField) {
-            print("Different passwords!")
+            let alert = UIAlertController(title: "Different passwords!", message: "Your passwords do not match", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: NSLocalizedString("OK", comment: "Default action"), style: .`default`, handler: { _ in
+                NSLog("The \"OK\" alert occured.")
+            }))
+            self.present(alert, animated: true, completion: nil)
+            
             return
         }
         
@@ -76,7 +94,7 @@ class signUpViewController: UIViewController, UIImagePickerControllerDelegate, U
                     return
                 }
                 let userReference = self.databaseRef.child("users").child(uid)
-                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[String](), "competitionInterval":0]
+                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[String](), "competitionInterval":0, "inComp" : false]
                 userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
                     if error != nil {
                         print(error!)
