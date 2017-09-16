@@ -58,6 +58,7 @@ class transactionViewController: UIViewController {
                         return
                     }
                 })
+                
                 performSegue(withIdentifier: "transactionToHome", sender: Any?.self)
             } else {
                 let alertController = UIAlertController(title: "Error", message: "Please enter a comment and type", preferredStyle: .alert)
