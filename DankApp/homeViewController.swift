@@ -10,10 +10,11 @@ import Foundation
 import UIKit
 import Firebase
 
-class homeViewController: UIViewController {
+class homeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let databaseRef = Database.database().reference()
     let uid = Auth.auth().currentUser?.uid
+    var competitors = [String]()
     
     @IBOutlet weak var toSearchButton: UIButton!
     
@@ -28,6 +29,8 @@ class homeViewController: UIViewController {
     @IBOutlet weak var competitorTableView: UITableView!
     
     override func viewDidLoad() {
+        competitorTableView.delegate = self
+        competitorTableView.dataSource = self
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -45,7 +48,6 @@ class homeViewController: UIViewController {
                 
                 let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
                     if let field = alertController.textFields![0] as? UITextField {
-                        // store your data
                         let values = ["budget" : Int(field.text!)]
                         self.databaseRef.child("users").child(self.uid!).updateChildValues(values, withCompletionBlock: { (error, ref) in
                             if error != nil {
@@ -69,9 +71,9 @@ class homeViewController: UIViewController {
                 
                 self.present(alertController, animated: true, completion: nil)
             } else {
-                print(values[2])
-                print(values[3])
                 //show competitor progress
+                self.competitors = values[0] as! [String]
+                self.competitorTableView.reloadData()
             }
         }
         super.viewDidAppear(false)
@@ -88,7 +90,7 @@ class homeViewController: UIViewController {
     }
     
     func endCompetition(uid: String) {
-        let values = ["budget" : 0, "competitors" : [String](), "inComp" : false, "competitionInterval": 0, "endDate": ""] as [String : Any]
+        let values = ["budget" : 0, "competitors" : [String](), "competitorIDs" : [String](), "inComp" : false, "competitionInterval": 0, "endDate": ""] as [String : Any]
         self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error!)
@@ -136,4 +138,18 @@ class homeViewController: UIViewController {
         })
         }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        return
+    }
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return competitors.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "competitorCell", for: indexPath) as! competitorTableViewCell
+        cell.usernameLabel.text = competitors[indexPath.row]
+        cell.placementLabel.text = String(indexPath.row + 1)
+        return cell
+    }
 }

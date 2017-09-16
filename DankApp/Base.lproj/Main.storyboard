@@ -142,12 +142,12 @@
                                                     <nil key="highlightedColor"/>
                                                     <userDefinedRuntimeAttributes>
                                                         <userDefinedRuntimeAttribute type="number" keyPath="layer.cornerRadius">
-                                                            <integer key="value" value="10"/>
+                                                            <integer key="value" value="5"/>
                                                         </userDefinedRuntimeAttribute>
                                                     </userDefinedRuntimeAttributes>
                                                 </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="umx-qO-75Z">
-                                                    <rect key="frame" x="43" y="0.0" width="280" height="43.5"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="umx-qO-75Z">
+                                                    <rect key="frame" x="51" y="0.0" width="272" height="44"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
@@ -159,7 +159,7 @@
                                                 <constraint firstAttribute="bottom" secondItem="umx-qO-75Z" secondAttribute="bottom" id="AKy-rO-71O"/>
                                                 <constraint firstItem="umx-qO-75Z" firstAttribute="top" secondItem="SdO-hA-P08" secondAttribute="top" id="Aoi-XA-kd0"/>
                                                 <constraint firstItem="NvS-wt-USX" firstAttribute="leading" secondItem="SdO-hA-P08" secondAttribute="leading" id="L1w-KB-uVo"/>
-                                                <constraint firstItem="umx-qO-75Z" firstAttribute="leading" secondItem="NvS-wt-USX" secondAttribute="trailing" id="RwO-Xs-NSy"/>
+                                                <constraint firstItem="umx-qO-75Z" firstAttribute="leading" secondItem="NvS-wt-USX" secondAttribute="trailing" constant="5" id="RwO-Xs-NSy"/>
                                                 <constraint firstAttribute="bottom" secondItem="NvS-wt-USX" secondAttribute="bottom" id="keH-KK-qKX"/>
                                             </constraints>
                                         </tableViewCellContentView>

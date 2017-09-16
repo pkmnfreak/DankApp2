@@ -16,6 +16,7 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     let currentUID = Auth.auth().currentUser?.uid
     var competitors = [String]()
     var competitorIDs = [String]()
+    var currentName = String()
     
     @IBOutlet weak var toHomeButton: UIButton!
     
@@ -26,6 +27,9 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     @IBOutlet weak var searchTableView: UITableView!
     
     override func viewDidLoad() {
+        fetchName { (values) in
+            self.currentName = values
+        }
         searchTableView.delegate = self
         searchTableView.dataSource = self
         super.viewDidLoad()
@@ -47,10 +51,11 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
             let currentDate = String(describing: dateComponents.month!) + "-" + String(describing: dateComponents.day!)
             let endDate = String(describing: dateComponents.month!) + "-" + String(describing: dateComponents.day! + duration)
             let before = competitorIDs
+            let before2 = competitors
             for user in before {
-                updateInComp(uid: user, competitors: before, interval: duration, startDate: currentDate, endDate: endDate)
+                updateInComp(uid: user, competitorIDs: before, competitors: before2, interval: duration, startDate: currentDate, endDate: endDate)
             }
-            updateInComp(uid: currentUID!, competitors: before, interval: duration, startDate: currentDate, endDate: endDate)
+            updateInComp(uid: currentUID!, competitorIDs: before, competitors: before2, interval: duration, startDate: currentDate, endDate: endDate)
             performSegue(withIdentifier: "searchToHome", sender: Any?.self)
         } else {
             let alertController = UIAlertController(title: "Error", message: "Input a duration!!", preferredStyle: .alert)
@@ -63,9 +68,10 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
     }
     
-    func updateInComp(uid : String, competitors: [String], interval: Int, startDate: String, endDate: String) {
-        let temp = competitors + [currentUID!]
-        let values = ["inComp" : true, "competitors" : temp, "compInterval" : interval, "startDate" : startDate, "endDate": endDate] as [String : Any]
+    func updateInComp(uid : String, competitorIDs: [String], competitors: [String], interval: Int, startDate: String, endDate: String) {
+        let temp = competitorIDs + [currentUID!]
+        let temp2 = competitors + [currentName]
+        let values = ["inComp" : true, "competitors" : temp2, "competitorIDs" : temp, "compInterval" : interval, "startDate" : startDate, "endDate": endDate] as [String : Any]
         self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error!)
@@ -121,4 +127,14 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return competitors.count
     }
     
+    func fetchName(andOnCompletion completion:@escaping (String)->()){
+        let userRef = databaseRef.child("users").child(currentUID!)
+        var value : String = ""
+        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dict = snapshot.value as? [String : AnyObject] {
+                value = (dict["username"] as? String)!
+            }
+            completion(value)
+        })
+    }
 }
