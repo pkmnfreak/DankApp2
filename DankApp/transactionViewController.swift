@@ -18,7 +18,6 @@ class transactionViewController: UIViewController {
     var currentRound = ""
     var currentDate = ""
     
-    
     @IBOutlet weak var costTextField: UITextField!
     
     @IBOutlet weak var typeOfTransaction: UISegmentedControl!
@@ -48,7 +47,7 @@ class transactionViewController: UIViewController {
         let type = types[typeOfTransaction.selectedSegmentIndex]
         let comment = commentsTextField.text
         let userRef = databaseRef.child("users").child(uid!).child("stats").child(currentRound).child(currentDate)
-        if let temp = Int(costTextField.text!) {
+        if let temp = Double(costTextField.text!) {
             if comment != "" && type != "" {
                 /*let values : (Int, String) = (1, "")
                 userRef.child(type).updateChildValues(values, withCompletionBlock: { (error, ref) in
@@ -57,6 +56,15 @@ class transactionViewController: UIViewController {
                         return
                     }
                 })*/
+                /*
+                let values : [String : Double] = [comment! : temp]
+                userRef.child(type).updateChildValues(values, withCompletionBlock: {(error, ref) in
+                    if error != nil {
+                        print(error!)
+                        return
+                    }
+                })*/
+ 
                 performSegue(withIdentifier: "transactionToHome", sender: Any?.self)
             } else {
                 let alertController = UIAlertController(title: "Error", message: "Please enter a comment and type", preferredStyle: .alert)
@@ -86,6 +94,8 @@ class transactionViewController: UIViewController {
             completion(value)
         })
     }
+    
+    
     
     
     
