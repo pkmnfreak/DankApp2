@@ -13,7 +13,7 @@ import Firebase
 class searchViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     let databaseRef = Database.database().reference()
-    let uid = Auth.auth().currentUser?.uid
+    let currentUID = Auth.auth().currentUser?.uid
     var competitors = [String]()
     var competitorIDs = [String]()
     
@@ -38,7 +38,24 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     @IBAction func createGameButtonPressed(_ sender: Any) {
-        
+        if let duration = Int(numberOfDaysTextField.text!) {
+            let before = competitorIDs
+            for user in before {
+                updateInComp(uid: user, competitors: before, interval: duration)
+            }
+            updateInComp(uid: currentUID!, competitors: before, interval: duration)
+        }
+    }
+    
+    func updateInComp(uid : String, competitors: [String], interval: Int) {
+        let temp = competitors + [currentUID!]
+        let values = ["inComp" : true, "competitors" : temp, "compInterval" : interval] as [String : Any]
+        self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
+            if error != nil {
+                print(error!)
+                return
+            }
+        })
     }
     
     @IBAction func searchButtonPressed(_ sender: Any) {
