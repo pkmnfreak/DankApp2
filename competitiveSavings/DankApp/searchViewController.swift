@@ -71,7 +71,7 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func updateInComp(uid : String, competitorIDs: [String], competitors: [String], interval: Int, startDate: String, endDate: String) {
         let temp = competitorIDs + [currentUID!]
         let temp2 = competitors + [currentName]
-        let values = ["inComp" : true, "competitors" : temp2, "competitorIDs" : temp, "compInterval" : interval, "startDate" : startDate, "endDate": endDate] as [String : Any]
+        let values = ["inComp" : true, "competitors" : temp2, "compIDs" : temp, "compInterval" : interval, "startDate" : startDate, "endDate": endDate] as [String : Any]
         self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error!)

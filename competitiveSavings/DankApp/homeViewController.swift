@@ -43,7 +43,6 @@ class homeViewController: UIViewController, UITableViewDelegate, UITableViewData
                     self.endCompetition(uid: user)
                 }
             } else if values[2] as! Int == 0 && values[1] as! Bool {
-                print("WJEKWKEWKEKWKWEKKEWK")
                 let alertController = UIAlertController(title: "Budget", message: "Please input how much you aim to spend this round", preferredStyle: .alert)
                 
                 let confirmAction = UIAlertAction(title: "Confirm", style: .default) { (_) in
@@ -72,8 +71,10 @@ class homeViewController: UIViewController, UITableViewDelegate, UITableViewData
                 self.present(alertController, animated: true, completion: nil)
             } else {
                 //show competitor progress
-                self.competitors = values[0] as! [String]
-                self.competitorTableView.reloadData()
+                if ((values[0] as! [String])[0] != "") {
+                    self.competitors = values[0] as! [String]
+                    self.competitorTableView.reloadData()
+                }
             }
         }
         super.viewDidAppear(false)
@@ -90,7 +91,7 @@ class homeViewController: UIViewController, UITableViewDelegate, UITableViewData
     }
     
     func endCompetition(uid: String) {
-        let values = ["budget" : 0, "competitors" : [String](), "competitorIDs" : [String](), "inComp" : false, "competitionInterval": 0, "endDate": ""] as [String : Any]
+        let values = ["budget" : 0, "competitors" : [String](), "compIDs" : [String](), "inComp" : false, "competInterval": 0, "endDate": ""] as [String : Any]
         self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error!)
@@ -128,10 +129,14 @@ class homeViewController: UIViewController, UITableViewDelegate, UITableViewData
         var value : [Any] = []
         userRef.observeSingleEvent(of: .value, with: { (snapshot) in
             if let dict = snapshot.value as? [String : AnyObject] {
-                value.append(dict["competitors"]!)
+                if let c = dict["competitors"] {
+                    value.append(c)
+                } else {
+                    value.append([""])
+                }
                 value.append(dict["inComp"]!)
                 value.append(dict["budget"]!)
-                value.append(dict["competitionInterval"]!)
+                value.append(dict["compInterval"]!)
                 value.append(dict["endDate"]!)
             }
             completion(value)
@@ -150,6 +155,20 @@ class homeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let cell = tableView.dequeueReusableCell(withIdentifier: "competitorCell", for: indexPath) as! competitorTableViewCell
         cell.usernameLabel.text = competitors[indexPath.row]
         cell.placementLabel.text = String(indexPath.row + 1)
+        databaseRef.child("users").queryOrdered(byChild: "username").queryEqual(toValue: cell.usernameLabel.text).observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dict = snapshot.value as? [String : AnyObject] {
+                let budget = (Array(dict.values)[0] as! [String : AnyObject])["budget"]
+                let currentRound = (Array(dict.values)[0] as! [String : AnyObject])["currentRound"] as! Int
+                if let stats = (Array(dict.values)[0] as! [String : AnyObject])["stats"] {
+                    let total = (stats[currentRound] as! [String : AnyObject])["total"] as! Double
+                    cell.budgetLabel.text = "Percent: " + String(total / (budget as! Double)) + "%"
+                } else {
+                    cell.budgetLabel.text = "Percent: 0%"
+                }
+            }
+        }) { (err) in
+            print(err)
+        }
         return cell
     }
 }

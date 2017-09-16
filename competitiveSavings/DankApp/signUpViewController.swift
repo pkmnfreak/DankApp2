@@ -76,7 +76,7 @@ class signUpViewController: UIViewController, UIImagePickerControllerDelegate, U
                     return
                 }
                 let userReference = self.databaseRef.child("users").child(uid)
-                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[String](), "competitionInterval":0, "inComp" : false, "startDate": 0, "endDate": 0]
+                let values : [String : Any] = ["username":usernameTextField, "pic":"", "budget":0, "winstreak":0, "stats":[Int : Any](), "currentRound":0, "compIDs":[""], "compInterval":0, "inComp" : false, "startDate": 0, "endDate": "", "competitors": [""]]
                 userReference.updateChildValues(values, withCompletionBlock: { (error, ref) in
                     if error != nil {
                         print(error!)
@@ -85,21 +85,6 @@ class signUpViewController: UIViewController, UIImagePickerControllerDelegate, U
                 self.dismiss(animated: true, completion: nil)
                 }
         )})
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
-        var selectedImageFromPicker: UIImage?
-        
-        if let editedImage = info["UIImagePickerControlledImage"] as? UIImage{
-            selectedImageFromPicker = editedImage
-        } else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage{
-            selectedImageFromPicker = originalImage
-        }
-        if let selectedImage = selectedImageFromPicker{
-            profileImage.image = selectedImage
-        }
-        dismiss(animated: true, completion: nil)
     }
     
 }

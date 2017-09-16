@@ -15,4 +15,5 @@ class competitorTableViewCell: UITableViewCell {
     
     @IBOutlet weak var placementLabel: UILabel!
     
+    @IBOutlet weak var budgetLabel: UILabel!
 }

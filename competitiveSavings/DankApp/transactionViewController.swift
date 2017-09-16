@@ -5,7 +5,6 @@
 //  Created by Evan Chang on 16/09/17.
 //  Copyright © 2017 Evan Chang. All rights reserved.
 //
-
 import Foundation
 import UIKit
 import Firebase
@@ -17,6 +16,7 @@ class transactionViewController: UIViewController {
     let uid = Auth.auth().currentUser?.uid
     var currentRound = ""
     var currentDate = ""
+    
     
     @IBOutlet weak var costTextField: UITextField!
     
@@ -49,7 +49,6 @@ class transactionViewController: UIViewController {
         let userRef = databaseRef.child("users").child(uid!).child("stats").child(currentRound).child(currentDate)
         let comment = commentsTextField.text
         if let temp = Double(cost!) {
-        if let temp = Double(costTextField.text!) {
             if comment != "" && type != "" {
                 let values : [String : Double] = [comment! : temp]
                 userRef.child(type).updateChildValues(values, withCompletionBlock: { (error, ref) in
@@ -58,6 +57,20 @@ class transactionViewController: UIViewController {
                         return
                     }
                 })
+                
+                fetchTotal { (values) in
+                    let newTotal = values + temp
+                    let newValues = ["total" : newTotal]
+                    let totalRef = self.databaseRef.child("users").child(self.uid!).child("stats").child(self.currentRound)
+                    totalRef.updateChildValues(newValues, withCompletionBlock: { (error, ref) in
+                        if error != nil {
+                            print(error!)
+                            return
+                        }
+                    })
+                }
+                
+                
                 performSegue(withIdentifier: "transactionToHome", sender: Any?.self)
             } else {
                 let alertController = UIAlertController(title: "Error", message: "Please enter a comment and type", preferredStyle: .alert)
@@ -88,8 +101,17 @@ class transactionViewController: UIViewController {
         })
     }
     
-    
-    
-    
+    func fetchTotal(andOnCompletion completion:@escaping (Double)->()){
+        let userRef = databaseRef.child("users").child(uid!).child("stats").child(currentRound)
+        var value : Double = 0
+        userRef.observeSingleEvent(of: .value, with: { (snapshot) in
+            if let dict = snapshot.value as? [String : AnyObject] {
+                if let total = dict["total"] {
+                    value = total as! Double
+                }
+            }
+            completion(value)
+        })
+    }
     
 }
