@@ -39,17 +39,33 @@ class searchViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     @IBAction func createGameButtonPressed(_ sender: Any) {
         if let duration = Int(numberOfDaysTextField.text!) {
+            let date = Date()
+            let calendar = Calendar.current
+            var dateComponents = DateComponents()
+            dateComponents.month = calendar.component(.month, from: date)
+            dateComponents.day = calendar.component(.day, from: date)
+            let currentDate = String(describing: dateComponents.month!) + "-" + String(describing: dateComponents.day!)
+            let endDate = String(describing: dateComponents.month!) + "-" + String(describing: dateComponents.day! + duration)
             let before = competitorIDs
             for user in before {
-                updateInComp(uid: user, competitors: before, interval: duration)
+                updateInComp(uid: user, competitors: before, interval: duration, startDate: currentDate, endDate: endDate)
             }
-            updateInComp(uid: currentUID!, competitors: before, interval: duration)
+            updateInComp(uid: currentUID!, competitors: before, interval: duration, startDate: currentDate, endDate: endDate)
+            performSegue(withIdentifier: "searchToHome", sender: Any?.self)
+        } else {
+            let alertController = UIAlertController(title: "Error", message: "Input a duration!!", preferredStyle: .alert)
+            
+            let defaultAction = UIAlertAction(title: "OK", style: .cancel, handler: nil)
+            alertController.addAction(defaultAction)
+            
+            self.present(alertController, animated: true, completion: nil)
         }
+        
     }
     
-    func updateInComp(uid : String, competitors: [String], interval: Int) {
+    func updateInComp(uid : String, competitors: [String], interval: Int, startDate: String, endDate: String) {
         let temp = competitors + [currentUID!]
-        let values = ["inComp" : true, "competitors" : temp, "compInterval" : interval] as [String : Any]
+        let values = ["inComp" : true, "competitors" : temp, "compInterval" : interval, "startDate" : startDate, "endDate": endDate] as [String : Any]
         self.databaseRef.child("users").child(uid).updateChildValues(values, withCompletionBlock: { (error, ref) in
             if error != nil {
                 print(error!)
