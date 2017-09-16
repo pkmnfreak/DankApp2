@@ -46,17 +46,18 @@ class transactionViewController: UIViewController {
     
     @IBAction func createTransactionPressed(_ sender: Any) {
         let type = types[typeOfTransaction.selectedSegmentIndex]
-        let comment = commentsTextField.text
+        let cost = costTextField.text
         let userRef = databaseRef.child("users").child(uid!).child("stats").child(currentRound).child(currentDate)
-        if let temp = Int(costTextField.text!) {
+        let comment = commentsTextField.text
+        if let temp = Double(cost!) {
             if comment != "" && type != "" {
-                /*let values : (Int, String) = (1, "")
+                let values : [String : Double] = [comment! : temp]
                 userRef.child(type).updateChildValues(values, withCompletionBlock: { (error, ref) in
                     if error != nil {
                         print(error!)
                         return
                     }
-                })*/
+                })
                 performSegue(withIdentifier: "transactionToHome", sender: Any?.self)
             } else {
                 let alertController = UIAlertController(title: "Error", message: "Please enter a comment and type", preferredStyle: .alert)
